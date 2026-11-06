@@ -56,9 +56,72 @@ assignment costs well under $1, and the ledger then needs no paragraph explainin
 model is not the one the handout names. If no card is available today, A and D still leave
 Parts 1–5 fully gradeable (50 of the 50 code points need no key).
 
+**Student's ruling:** A — OpenCode Go, model `deepseek-v4-flash`.
+
+**Resulting artifact:** `.env` (never committed) with `AI_PROVIDER=openai`,
+`AI_MODEL=deepseek-v4-flash`, `OPENAI_BASE_URL=https://opencode.ai/zen/go/v1`, a fresh key
+from the OpenCode console, and the two prices read off OpenCode's own pricing page for
+ledger entry 1. Consequences to verify before Part 6: (a) the key must be minted, because
+the Assignment 2 key is expired; (b) whether the gateway demands the `x-opencode-session`
+header that the given `agent/provider.py` does not send — given files may not be changed,
+so if the header is mandatory this ruling has to come back to the student with that
+evidence rather than a patched given file.
+
+**Facts verified after the ruling, 2026-11-06** (source: `https://opencode.ai/docs/go/`,
+read live, and `openai/_client.py` in this repo's `.venv`):
+
+| Fact | Value |
+| --- | --- |
+| Prices, DeepSeek V4.1 Flash | Off-Peak $0.15 in / $0.60 out per Mtok; Peak $0.30 / $1.20 |
+| Peak window | 01:00–04:00 and 06:00–10:00 UTC, Monday–Friday; all other hours off-peak |
+| Consequence | an evening run in ET falls inside 01:00–04:00 UTC; `.env` can hold only one pair, so entry 1 must state which pair and why |
+| Region gate | DeepSeek V4.1 Flash is blocked unless the workspace sets **Global** under Settings › Privacy › Regions |
+| Session header | `x-opencode-session` is requested ("send a stable session ID") but is not a validated-client requirement; the OpenAI SDK reads `OPENAI_BASE_URL` and `OPENAI_CUSTOM_HEADERS` from the environment, so both are settable without touching `agent/provider.py` |
+
+---
+
+## D-006 · open · Parts 1-5 code, written from the specification comments
+
+**Item:** whether the five files below stand as the submitted implementation. The rubric
+grades them by public and hidden tests (50 points), and you may be asked in class to
+explain any line, so the ruling is "I have read this and I can defend it", not "the tests
+pass".
+
+**Referenced content:** the comment blocks above each function are the spec; these are the
+choices made inside them, where the spec left room.
+
+| File | Function | Choice that the spec did not spell out |
+| --- | --- | --- |
+| `agent/tools.py` | `safe_path` | absolute paths are refused before resolution; containment tested with `Path.is_relative_to` after `resolve()`, so symlinks cannot escape |
+| | `read_file` | `limit` is clamped with `min(limit, READ_LIMIT_MAX)`; the empty-file answer is checked before the past-the-end error |
+| | `edit_file` | writes with `newline="\n"` so the file is rewritten as UTF-8 with `\n` endings; nothing is written when it raises |
+| | `format_report` | a timed-out report gets one `FAILED` line instead of a traceback, so two identical runs still compare equal |
+| `agent/policy.py` | `gate_for` | `posixpath.normpath(path.replace("\\", "/"))`, then `== "tests"` or `startswith("tests/")` |
+| | `is_stuck` | requires `last_output is not None` explicitly, so the first `run_tests` can never be "stuck" |
+| `agent/loop.py` | `run_agent` | `stop()` is one helper so exactly one `stop` event is written on every exit path; the stuck check runs after the whole turn's calls, as the comment orders it |
+| `agent/reflexion.py` | `judge` | timed-out judge returns the fixed sentence instead of `format_report` |
+| | `reflexion` | appends a leading `\n` only when `NOTES.md` exists and does not end with one |
+| `server.py` | module | tools registered by looping over `agent.tools.TOOLS`, so the descriptions can never drift from the docstrings |
+
+**Evidence at the time of writing:** `pytest` 40 passed; `pytest tests/test_tools.py` 16,
+`test_policy.py` 7, `test_loop.py` 9, `test_reflexion.py` 5, `test_server.py` 3;
+`python -m agent check-mcp` → "all checks passed" with all four descriptions matching.
+
+**Options:**
+
+| | Option |
+| --- | --- |
+| A | Accept all five files as they are; fill `review` in the ledger from this table |
+| B | Accept with named changes (say which row) — I change only that and re-run its test file |
+| C | Ask for a line-by-line walkthrough of one file first, then rule |
+
+**AI recommendation:** A, with one caveat worth knowing before you sign it: nothing here
+has been exercised against a real model yet, so the first practice run (S7) is the first
+evidence that the loop behaves with a model rather than the scripted one.
+
 **Student's ruling:** (pending)
 
-**Resulting artifact:** `.env` (never committed), ledger entry 1, `REPORT.md` §1.
+**Resulting artifact:** commits for Parts 1-5, and their ledger entries.
 
 ---
 
