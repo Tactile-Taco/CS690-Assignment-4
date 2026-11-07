@@ -103,14 +103,21 @@ Hard ordering constraints from the handout:
 
 ## 6. Provenance monitor
 
-`a4-ledger-watch` (systemd user service, outside the repo) polls the repo and writes:
+`a4-ledger-watch` (systemd user service, state in `~/school/CS690/assignments/A4-ledger/`)
+polls the repo **and the AI-tool transcripts** and writes:
 
-- `ledger/events.jsonl` — append-only facts: commit SHAs with diffstat, pytest results,
+- `events.jsonl` — append-only facts: commit SHAs with diffstat, pytest results,
   `runs/*/trace.jsonl` summaries (steps, gates, rejections, judge verdicts, tokens),
-  `prompts/` additions, `DECISIONS.md` ruling count, file digests.
-- `LEDGER.draft.md` — one candidate entry per reviewable change with the seven schema
-  fields; `review`, `risk` and the `prompts` path are `REVIEW_REQUIRED` until a ruling
-  exists in `DECISIONS.md`.
-- `ledger/QUEUE.md` — what still needs a ruling, oldest first.
+  `prompts/` additions, `DECISIONS.md` rulings, and one `session` event per relevant omp
+  transcript with each model's provider, calls, tokens, cache reads and cost, plus tool
+  calls by name and the repo files the assistant touched.
+- `staged-prompts/` — every message the student typed in those sessions, verbatim, one
+  file each, so a ledger entry's `prompts` field can name real text; anything that looks
+  like a credential is refused and logged as `prompt_skipped` instead.
+- `LEDGER.draft.md` — candidate entries with the seven schema fields, plus a
+  "AI tool use on record" section; `review`, `risk` and unmatched `prompts` stay
+  `REVIEW_REQUIRED` until a ruling exists in `DECISIONS.md`.
+- `QUEUE.md` — what still needs a ruling, oldest first.
 
-The monitor never writes `LEDGER.md`.
+The monitor never writes `LEDGER.md`. Which model and which tool calls belong in an
+entry's `tool` line is a student ruling, not a monitor fact.
