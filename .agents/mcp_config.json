@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "a4-tools": {
+      "command": "/home/TacticalTaco/school/CS690/assignments/Assignment-4/.venv/bin/python",
+      "args": [
+        "/home/TacticalTaco/school/CS690/assignments/Assignment-4/server.py",
+        "--workspace",
+        "/home/TacticalTaco/school/CS690/assignments/Assignment-4/runs/terminal/workspace"
+      ],
+      "disabled": false
+    }
+  }
+}

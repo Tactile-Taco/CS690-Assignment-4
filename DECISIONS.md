@@ -132,7 +132,15 @@ in the way.
 
 - D-002 · vendor agent for Part 7: `agy` (installed, `/usr/bin/agy`, free tier) vs
   installing Claude Code. Consequence if agy: the reviewer's read-only rule is a request,
-  not a lock, and REPORT §7 has to say so.
+  not a lock, and REPORT §7 has to say so. **Evidence gathered 2026-11-07:** `agy` 1.5.1 is
+  installed but **not logged in** (`quota_manager: doRefreshQuota: skipped (not logged
+  in)`), so `agy --print` returns the usage text instead of a reply — sign-in is a student
+  action. This build reads project custom agents from `.agents/agents/<name>/agent.md`
+  (confirmed in its own changelog text, including `--agent` and headless runs) but
+  `agy mcp list` did not see a project-level `.agents/mcp_config.json`; the server is
+  therefore also registered in the user-level config with `agy mcp add --type stdio
+  a4-tools …`, which reports it as `enabled`, and the project file stays in the repo
+  because rubric B6 asks for it. Removal: `agy mcp remove a4-tools`.
 - D-003 · deadline: **resolved by re-reading Canvas on 2026-11-07 10:38 ET.** Assignment-4
   itself moved: `due_at = lock_at = 2026-11-10T04:59:59Z` = **Monday Nov 9 23:59 ET**, so
   the two-day extension is real and recorded on the item, not just announced. The same
