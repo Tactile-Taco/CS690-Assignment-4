@@ -16,6 +16,11 @@ Protocol (same shape as Assignment 2 and Assignment 3):
    and `risk` fields stay `REVIEW_REQUIRED` until a ruling lands here.
 5. Recorded runs are recorded once. A rejection and its reason are captured here at the
    moment they happen, because rubric B3 and REPORT §2 are checked against runA's trace.
+6. **Review is part by part, in order, one part per turn** (student's instruction,
+   2026-11-07). For each part the assistant states what that part of the handout asks in
+   its own words, what already exists in the file, and what was written or changed — and
+   it names nothing it has not already described. No part is accepted on a whole-file
+   basis, and the next part does not start until the student rules on the current one.
 
 Standing constraint from the course: AI tools are permitted and expected, and unreviewed
 AI output or a fabricated ledger is an academic-integrity violation, so every entry below
@@ -80,48 +85,44 @@ read live, and `openai/_client.py` in this repo's `.venv`):
 
 ---
 
-## D-006 · open · Parts 1-5 code, written from the specification comments
+## D-006 · open · Part 1, agent/tools.py (the five functions and the three descriptions)
 
-**Item:** whether the five files below stand as the submitted implementation. The rubric
-grades them by public and hidden tests (50 points), and you may be asked in class to
-explain any line, so the ruling is "I have read this and I can defend it", not "the tests
-pass".
+**Item:** whether `agent/tools.py` stands as this part's deliverable. Part 1 of the handout
+asks for `safe_path`, `read_file`, `edit_file`, `format_report` and `run_tests` written to
+the comment above each one, a description (docstring) for the last three, and `fixture/`
+read but not changed. The review is function by function, because each of these five has
+one behaviour that the tests assert exactly and one that they do not.
 
-**Referenced content:** the comment blocks above each function are the spec; these are the
-choices made inside them, where the spec left room.
+**Referenced content:** the comment above each function is the specification; these are the
+choices made inside it.
 
-| File | Function | Choice that the spec did not spell out |
+| Function | What the comment fixes | The choice made |
 | --- | --- | --- |
-| `agent/tools.py` | `safe_path` | absolute paths are refused before resolution; containment tested with `Path.is_relative_to` after `resolve()`, so symlinks cannot escape |
-| | `read_file` | `limit` is clamped with `min(limit, READ_LIMIT_MAX)`; the empty-file answer is checked before the past-the-end error |
-| | `edit_file` | writes with `newline="\n"` so the file is rewritten as UTF-8 with `\n` endings; nothing is written when it raises |
-| | `format_report` | a timed-out report gets one `FAILED` line instead of a traceback, so two identical runs still compare equal |
-| `agent/policy.py` | `gate_for` | `posixpath.normpath(path.replace("\\", "/"))`, then `== "tests"` or `startswith("tests/")` |
-| | `is_stuck` | requires `last_output is not None` explicitly, so the first `run_tests` can never be "stuck" |
-| `agent/loop.py` | `run_agent` | `stop()` is one helper so exactly one `stop` event is written on every exit path; the stuck check runs after the whole turn's calls, as the comment orders it |
-| `agent/reflexion.py` | `judge` | timed-out judge returns the fixed sentence instead of `format_report` |
-| | `reflexion` | appends a leading `\n` only when `NOTES.md` exists and does not end with one |
-| `server.py` | module | tools registered by looping over `agent.tools.TOOLS`, so the descriptions can never drift from the docstrings |
+| `safe_path` | refuse absolute paths and any path that resolves outside the project folder, with one exact message | absolute is refused *before* resolution; containment is `resolve()` then `Path.is_relative_to(root)`; the project folder itself counts as inside |
+| `read_file` | header line, `{:>4}` numbered lines, and the "more below" hint; refusals for not-a-file, start or limit below 1, start past the end, and an empty file | `limit` is clamped with `min(limit, 200)`; the empty-file answer is checked before the past-the-end error; UTF-8 only |
+| `edit_file` | 0 matches and 2+ matches each get an exact teaching message, `old_text == ""` gets its own, success returns `Edited path: replaced 1 match.` | the file is rewritten with `newline="\n"`; nothing is written on any failure path |
+| `format_report` | `PASSED: N of N tests passed.` or `FAILED: k of N tests did not pass.` plus at most 10 problem lines and `(j more not shown)` | a timed-out report gets one `FAILED` line, never a traceback, because Part 2 compares two outputs for equality |
+| `run_tests` | call the given runner with a 20 second limit; timeout becomes a refusal that says the last edit may have caused a loop | a failing test suite is returned as text, not raised: only a timeout is a failure |
 
-**Evidence at the time of writing:** `pytest` 40 passed; `pytest tests/test_tools.py` 16,
-`test_policy.py` 7, `test_loop.py` 9, `test_reflexion.py` 5, `test_server.py` 3;
-`python -m agent check-mcp` → "all checks passed" with all four descriptions matching.
+**Evidence:** `pytest tests/test_tools.py` → 16 passed. The sixteen: three for `safe_path`,
+three for `read_file`, three for `edit_file`, two for `run_tests`, one for `format_report`,
+and four that require every tool's description to be free of `TODO` and at least 20 words.
 
 **Options:**
 
 | | Option |
 | --- | --- |
-| A | Accept all five files as they are; fill `review` in the ledger from this table |
-| B | Accept with named changes (say which row) — I change only that and re-run its test file |
-| C | Ask for a line-by-line walkthrough of one file first, then rule |
+| A | Accept `agent/tools.py` as it is, function by function, on the table above |
+| B | Change a named function (say which and what you want instead); I change only that and re-run its tests |
+| C | You want one of the five explained in more detail before ruling |
 
-**AI recommendation:** A, with one caveat worth knowing before you sign it: nothing here
-has been exercised against a real model yet, so the first practice run (S7) is the first
-evidence that the loop behaves with a model rather than the scripted one.
+**AI recommendation:** A, with the caveat that the descriptions are the one thing no test
+can fully judge — a hidden test checks length and the absence of `TODO`, not whether a
+model could act on the words — so they are the part most worth reading yourself.
 
 **Student's ruling:** (pending)
 
-**Resulting artifact:** commits for Parts 1-5, and their ledger entries.
+**Resulting artifact:** the commit that added `agent/tools.py`, and its ledger entry.
 
 ---
 
