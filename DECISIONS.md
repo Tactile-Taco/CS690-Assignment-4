@@ -133,9 +133,12 @@ in the way.
 - D-002 · vendor agent for Part 7: `agy` (installed, `/usr/bin/agy`, free tier) vs
   installing Claude Code. Consequence if agy: the reviewer's read-only rule is a request,
   not a lock, and REPORT §7 has to say so.
-- D-003 · deadline: the instructor offered an extension to Sunday/Monday evening in class
-  (2026-11-03, 02:37), but Canvas `lock_at` is still Sat 2026-11-07 23:59 ET. Decide
-  whether to ask the instructor in writing or target Saturday.
+- D-003 · deadline: **resolved by re-reading Canvas on 2026-11-07 10:38 ET.** Assignment-4
+  itself moved: `due_at = lock_at = 2026-11-10T04:59:59Z` = **Monday Nov 9 23:59 ET**, so
+  the two-day extension is real and recorded on the item, not just announced. The same
+  announcement claims Milestone-1 moved to Monday Nov 9 23:59, but assignment 766809 still
+  reads Sat Nov 7 23:59 ET with no overrides, so that one is a record/announcement mismatch:
+  submit Milestone-1 before Saturday 23:59 rather than trusting the announcement.
 - D-004 · loop scope: implement `run_agent` exactly as the comment specifies (no extra
   planning phase). The instructor's "make a plan first" demonstration (2026-10-27,
   00:46:45) is a technique for agents generally; adding a plan call here changes the step

@@ -10,11 +10,11 @@ instructor's own words in `~/school/CS690/recordings/2026-10-27 18-07-07/CS690-2
 | Fact | Value | Source |
 | --- | --- | --- |
 | Canvas item | Assignment-4, id 768307, 100 points | `/api/v1/courses/73246/assignments` |
-| Due / lock | Sat 2026-11-07 23:59 ET (`2026-11-08T04:59:59Z`); `lock_at` == `due_at` | same |
-| Instructor ruling | extension for *project and assignment* to "Sunday evening or Monday evening, can't give more than that" — in-class offer, **not yet reflected on Canvas**, so the hard lock is still Sat 23:59 | 2026-11-03 transcript, 02:37:19–02:38:25 |
+| Due / lock | **Mon 2026-11-09 23:59 ET** (`2026-11-10T04:59:59Z`); `lock_at` == `due_at` | `/api/v1/courses/73246/assignments/768307`, re-read 2026-11-07 10:38 ET |
+| Instructor ruling | announced 2026-11-07 08:38 ET ("Milestone 2 Uploaded & Milestone 1 extended"): Assignment-4 moved to Monday Nov 9 23:59 | announcement 516665 + the assignment record, which now agrees |
 | Repo | `upstream` = md685-njit/Assignment-4 (read-only for us), `origin` = Tactile-Taco/CS690-Assignment-4 (public) | course convention |
 | Points | code by tests 50 · runs + terminal files 24 · report/evidence/ledger 26 | RUBRIC.md |
-| Sibling deadline | Project Milestone-1 also due Sat 23:59, Canvas says **unsubmitted** (work exists in `~/tmp/CS690-M1`) | assignments API |
+| Sibling deadline | Project Milestone-1: announcement 516665 says "extended ... to Monday, November 9, at 11:59 PM", but assignment 766809 still reads `due_at = lock_at = 2026-11-08T04:59:59Z` = **Sat Nov 7 23:59 ET**, with no overrides, and Canvas says **unsubmitted** (work exists in `~/tmp/CS690-M1`). A hard lock is what the submission actually passes through, so treat Saturday 23:59 as live until the record itself moves | announcement 516665 body + assignment 766809 `all_dates`/`overrides` |
 
 ## 2. What is graded, and therefore what we actually build
 
